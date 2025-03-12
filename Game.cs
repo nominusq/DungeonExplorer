@@ -112,14 +112,25 @@ namespace DungeonExplorer
 
         private void Move(string direction)
         {
-            Room nextRoom = direction switch
+            Room nextRoom;
+            switch (direction)
             {
-                "north" => currentRoom.North,
-                "south" => currentRoom.South,
-                "east" => currentRoom.East,
-                "west" => currentRoom.West,
-                _ => null
-            };
+                case "north":
+                    nextRoom = currentRoom.North;
+                    break;
+                case "south":
+                    nextRoom = currentRoom.South;
+                    break;
+                case "east":
+                    nextRoom = currentRoom.East;
+                    break;
+                case "west":
+                    nextRoom = currentRoom.West;
+                    break;
+                default:
+                    nextRoom = null;
+                    break;
+            }
 
             if (nextRoom != null)
             {
