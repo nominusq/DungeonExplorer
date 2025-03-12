@@ -1,9 +1,16 @@
+using System;
 using System.Diagnostics;
 
 namespace DungeonExplorer
 {
+    /// <summary>
+    /// Contains unit tests for the Dungeon Explorer game.
+    /// </summary>
     public class GameTest
     {
+        /// <summary>
+        /// Runs basic tests on the Player and Room classes.
+        /// </summary>
         public void RunTests()
         {
             Player player = new Player("TestPlayer", 100);

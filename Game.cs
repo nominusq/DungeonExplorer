@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Media;
 
 namespace DungeonExplorer
 {
@@ -11,66 +10,124 @@ namespace DungeonExplorer
 
         public Game()
         {
-            // Initialise player and room
             player = new Player("Hero", 100);
-            currentRoom = new Room("A dark and damp dungeon room with flickering torches.");
-
-            // Display welcome message
+            SetupRooms();
             Console.WriteLine("Welcome to Dungeon Explorer!");
-            Console.WriteLine($"You are {player.Name} with {player.Health} health.");
-            Console.WriteLine("Explore the dungeon and find the treasure!");
+        }
+
+        private void SetupRooms()
+        {
+            // Create rooms
+            Room room1 = new Room("A dark room with stone walls.");
+            Room room2 = new Room("A narrow hallway with torches flickering.");
+            Room room3 = new Room("A large hall with a skeleton on the floor.");
+            Room room4 = new Room("A treasure room. You feel something watching you...");
+
+            // Link rooms
+            room1.East = room2;
+            room2.West = room1;
+            room2.East = room3;
+            room3.West = room2;
+            room3.South = room4;
+            room4.North = room3;
+
+            // Add enemies
+            room2.Enemy = new Enemy("Goblin", 30, 5);
+            room4.Enemy = new Enemy("Orc", 50, 10);
+
+            currentRoom = room1;
         }
 
         public void Start()
         {
             playing = true;
 
-            while (playing)
+            while (playing && player.Health > 0)
             {
+                Console.WriteLine($"\n{currentRoom.GetDescription()}");
+                if (currentRoom.Enemy != null)
+                {
+                    Console.WriteLine($"An enemy {currentRoom.Enemy.Name} is here!");
+                }
+
                 Console.WriteLine("\nOptions:");
-                Console.WriteLine("1. Look around");
-                Console.WriteLine("2. Check status");
-                Console.WriteLine("3. Pick up an item");
+                Console.WriteLine("1. Attack enemy");
+                Console.WriteLine("2. Move");
+                Console.WriteLine("3. Check status");
                 Console.WriteLine("4. Exit game");
                 Console.Write("Choose an action: ");
-
                 string input = Console.ReadLine();
 
                 switch (input)
                 {
                     case "1":
-                        Console.WriteLine($"\n{currentRoom.GetDescription()}");
+                        if (currentRoom.Enemy != null)
+                        {
+                            player.Attack(currentRoom.Enemy);
+                            Console.WriteLine($"You hit the {currentRoom.Enemy.Name}!");
+
+                            if (currentRoom.Enemy.Health <= 0)
+                            {
+                                Console.WriteLine($"You defeated the {currentRoom.Enemy.Name}!");
+                                currentRoom.Enemy = null;
+                            }
+                            else
+                            {
+                                player.TakeDamage(currentRoom.Enemy.AttackPower);
+                                Console.WriteLine($"The {currentRoom.Enemy.Name} hits you! Health = {player.Health}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No enemy here.");
+                        }
                         break;
 
                     case "2":
-                        Console.WriteLine($"\nPlayer: {player.Name}");
+                        Console.WriteLine("Move to (North, South, East, West)?");
+                        string direction = Console.ReadLine()?.ToLower();
+                        Move(direction);
+                        break;
+
+                    case "3":
                         Console.WriteLine($"Health: {player.Health}");
                         Console.WriteLine($"Inventory: {player.InventoryContents()}");
                         break;
 
-                    case "3":
-                        Console.Write("\nEnter item name: ");
-                        string item = Console.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(item))
-                        {
-                            player.PickUpItem(item);
-                            Console.WriteLine($"{item} added to your inventory.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Invalid item name.");
-                        }
-                        break;
-
                     case "4":
-                        Console.WriteLine("\nExiting game...");
                         playing = false;
                         break;
 
                     default:
-                        Console.WriteLine("\nInvalid input. Try again.");
+                        Console.WriteLine("Invalid choice.");
                         break;
                 }
+            }
+
+            if (player.Health <= 0)
+            {
+                Console.WriteLine("You have died! Game over.");
+            }
+        }
+
+        private void Move(string direction)
+        {
+            Room nextRoom = direction switch
+            {
+                "north" => currentRoom.North,
+                "south" => currentRoom.South,
+                "east" => currentRoom.East,
+                "west" => currentRoom.West,
+                _ => null
+            };
+
+            if (nextRoom != null)
+            {
+                currentRoom = nextRoom;
+            }
+            else
+            {
+                Console.WriteLine("You can't go that way.");
             }
         }
     }
