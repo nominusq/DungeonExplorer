@@ -1,20 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DungeonExplorer
 {
+    /// <summary>
+    /// Main entry point for the Dungeon Explorer game.
+    /// </summary>
     internal class Program
     {
+        /// <summary>
+        /// Entry point for the console application.
+        /// </summary>
+        /// <param name="args">Command-line arguments.</param>
         static void Main(string[] args)
         {
             Game game = new Game();
             game.Start();
-            Console.WriteLine("Waiting for your Implementation");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
+
+            Console.WriteLine("\nGame Over. Thanks for playing!");
         }
     }
 }
