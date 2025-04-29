@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace DungeonExplorer
 {
@@ -9,21 +10,52 @@ namespace DungeonExplorer
     public class GameTest
     {
         /// <summary>
-        /// Runs basic tests on the Player and Room classes.
+        /// Runs basic tests on the Player, Room, Inventory, and Monster classes.
         /// </summary>
         public void RunTests()
         {
+            // Test Player
             Player player = new Player("TestPlayer", 100);
-            Room room = new Room("Test Room");
-
             Debug.Assert(player.Name == "TestPlayer", "Player name not initialized correctly.");
             Debug.Assert(player.Health == 100, "Player health not initialized correctly.");
-            Debug.Assert(room.GetDescription() == "Test Room", "Room description not initialized correctly.");
 
-            player.PickUpItem("Sword");
-            Debug.Assert(player.InventoryContents().Contains("Sword"), "Item not added to inventory correctly.");
+            // Test Inventory and Items
+            Weapon sword = new Weapon("Sword", 20);
+            Potion potion = new Potion("Health Potion", 30);
+            player.Inventory.AddItem(sword);
+            player.Inventory.AddItem(potion);
 
-            Console.WriteLine("All tests passed.");
+            Debug.Assert(player.Inventory.GetItems().Contains(sword), "Weapon not added to inventory.");
+            Debug.Assert(player.Inventory.GetItems().Contains(potion), "Potion not added to inventory.");
+
+            var weapons = player.Inventory.GetWeapons();
+            Debug.Assert(weapons.Count() == 1, "Weapon filtering via LINQ failed.");
+            Debug.Assert(weapons.First().Name == "Sword", "Weapon name mismatch after LINQ filtering.");
+
+            // Test Monster
+            Monster goblin = new Monster("Goblin", 40, 5);
+            Debug.Assert(goblin.Name == "Goblin", "Monster name not initialized correctly.");
+            Debug.Assert(goblin.Health == 40, "Monster health not initialized correctly.");
+            Debug.Assert(goblin.AttackPower == 5, "Monster attack power not initialized correctly.");
+
+            // Test damage
+            player.TakeDamage(20);
+            Debug.Assert(player.Health == 80, "Damage to player not applied correctly.");
+
+            goblin.TakeDamage(15);
+            Debug.Assert(goblin.Health == 25, "Damage to monster not applied correctly.");
+
+            // Test Room and GameMap
+            Room testRoom = new Room("Test Room");
+            testRoom.Enemy = goblin;
+
+            Debug.Assert(testRoom.GetDescription() == "Test Room", "Room description not correct.");
+            Debug.Assert(testRoom.Enemy != null, "Room enemy not assigned properly.");
+
+            GameMap map = new GameMap();
+            Debug.Assert(map.GetAllRooms().Count() >= 1, "GameMap did not initialize rooms properly.");
+
+            Console.WriteLine("All tests passed successfully!");
         }
     }
 }

@@ -13,6 +13,15 @@ namespace DungeonExplorer
         /// <param name="args">Command-line arguments.</param>
         static void Main(string[] args)
         {
+            bool runTests = false; // Set to 'true' to test
+
+            if (runTests)
+            {
+                GameTest tester = new GameTest();
+                tester.RunTests();
+                Console.WriteLine("\n--- Tests Completed Successfully ---\n");
+            }
+
             Game game = new Game();
             game.Start();
 
