@@ -1,56 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace DungeonExplorer
 {
     /// <summary>
     /// Represents the player in the game.
     /// </summary>
-    public class Player
+    public class Player : Creature
     {
-        public string Name { get; private set; }
-        public int Health { get; private set; }
-        private List<string> inventory;
+        public Inventory Inventory { get; private set; }
 
         /// <summary>
         /// Creates a new player with the specified name and health.
         /// </summary>
         public Player(string name, int health)
+            : base(name, health, 10) // Default attack power 10
         {
-            Name = name;
-            Health = health;
-            inventory = new List<string>();
-        }
-
-        public void PickUpItem(string item)
-        {
-            if (!string.IsNullOrEmpty(item))
-            {
-                inventory.Add(item);
-            }
-        }
-
-        public string InventoryContents()
-        {
-            return inventory.Count > 0 ? string.Join(", ", inventory) : "Empty";
+            Inventory = new Inventory();
         }
 
         /// <summary>
-        /// Reduces the player's health.
+        /// Boosts the player's attack power.
         /// </summary>
-        /// <param name="damage">Amount of damage to apply.</param>
-        public void TakeDamage(int damage)
+        /// <param name="amount">Amount to boost.</param>
+        public void BoostAttack(int amount)
         {
-            Health -= damage;
-            if (Health < 0) Health = 0;
+            AttackPower += amount;
+            Console.WriteLine($"{Name}'s attack increased by {amount}.");
         }
 
         /// <summary>
-        /// Attacks an enemy.
+        /// Heals the player by a specified amount.
         /// </summary>
-        /// <param name="enemy">The enemy to attack.</param>
-        public void Attack(Enemy enemy)
+        /// <param name="amount">Amount to heal.</param>
+        public void Heal(int amount)
         {
-            enemy.Health -= 10;
+            Health += amount;
+            Console.WriteLine($"{Name} healed by {amount}. Health is now {Health}.");
+        }
+
+        /// <summary>
+        /// Attacks a monster.
+        /// </summary>
+        /// <param name="target">The monster to attack.</param>
+        public override void Attack(Creature target)
+        {
+            Console.WriteLine($"{Name} attacks {target.Name} for {AttackPower} damage!");
+            target.TakeDamage(AttackPower);
         }
     }
 }

@@ -12,7 +12,8 @@ namespace DungeonExplorer
         public Room South { get; set; }
         public Room East { get; set; }
         public Room West { get; set; }
-        public Enemy Enemy { get; set; }
+        public Monster Monster { get; set; }
+        public Item Item { get; set; }
 
         /// <summary>
         /// Creates a room with the specified description.
