@@ -41,5 +41,10 @@ namespace DungeonExplorer
         {
             return items.Any() ? string.Join(", ", items.Select(i => i.Name)) : "Empty";
         }
+
+        public List<Item> GetItems()
+        {
+            return items;
+        }
     }
 }

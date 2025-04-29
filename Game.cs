@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace DungeonExplorer
 {
@@ -20,7 +21,7 @@ namespace DungeonExplorer
             Console.WriteLine("Welcome to the Dungeon Explorer!");
             Console.Write("Enter your name: ");
             string playerName = Console.ReadLine();
-            player = new Player(playerName);
+            player = new Player(playerName, 100);
             map = new GameMap();
             InitializeRooms();
             currentRoom = map.GetRooms().First();
